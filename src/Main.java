@@ -8,7 +8,7 @@ public class Main {
 //		System.out.println(b.getRating("ótimo bom ok gostei"));
 //		System.out.println(b.getRating("ok"));
 //		b.format("ótimo[ { } ] ! @ # $ % $ % & * ( ) - _ = + ' ` ~ ^  bom ok e eu gostei achei diferenciado,\'vou\' (fiq)uei \"algo\" sermão çedilãoé");
-		b.format("Eu não gostei deste lanche / ^ ~.Ele é muito simples, não me satisfez.");
+		b.format("Eu não gostei muito do lanche. Ele é muito simples, não me satisfez.");
 		
 	}
 
