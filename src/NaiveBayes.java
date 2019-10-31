@@ -14,17 +14,17 @@ public class NaiveBayes {
 	private double entries;
 	private Set<String> stopwords;
 	private Set<String> modificadores;
-	private Set<String> pontos;
+	private Set<String> divisores;
 
 	public NaiveBayes() {
 		this.bayes = new HashMap<String, int[]>();
 
-		this.pontos = new HashSet<>(Arrays.asList(new String[] { ".", ",", "(", ")", "!", ";", ":", "?" }));
+		this.divisores = new HashSet<>(Arrays.asList(new String[] { ".", ",", "(", ")", "!", ";", ":", "?", "e" }));
 
-		this.modificadores = new HashSet<>(Arrays.asList(new String[] { "bastante", "bastantes", "grande", "grandes",
-				"muito", "nao", "pequena", "pequenas", "pequeno", "pequenos", "pouca", "poucas", "pouco", "poucos", }));
+		this.modificadores = new HashSet<>(Arrays.asList(new String[] { "bastante", "bastantes", "grande", "grandes", "meio",
+				"muito", "nao", "pequena", "pequenas", "pequeno", "pequenos", "pouca", "poucas", "pouco", "poucos", "bem"}));
 
-		this.stopwords = new HashSet<>(Arrays.asList(new String[] { "", "\t", "\n", "a", "a", "achamos", "achei",
+		this.stopwords = new HashSet<>(Arrays.asList(new String[] { "", " ", "\t", "\n", "a", "a", "achamos", "achei",
 				"agora", "ainda", "algo", "alguem", "algum", "alguma", "algumas", "alguns", "ampla", "amplas", "amplo",
 				"amplos", "ante", "antes", "ao", "aos", "apos", "aquela", "aquelas", "aquele", "aqueles", "aquilo",
 				"as", "as", "ate", "atraves", "cada", "coisa", "coisas", "com", "como", "contra", "contudo", "da",
@@ -142,24 +142,22 @@ public class NaiveBayes {
 		String[] a = frase.split(";");
 		for (int i = 0; i < a.length; i++) {
 			if (modificadores.contains(a[i])) {
-				System.out.println("Entrou: " + a[i]);
 				boolean encontrou = false;
-				for (int j = i + 1; j < a.length; j++) {
-					if (pontos.contains(a[j])) {
-						System.out.println("Saiu: " + a[j]);
-						break;
-					}
+				for (int j = i - 1; j > -1; j--) {
+					
+					if (divisores.contains(a[j]))break;
+					
 					if (!stopwords.contains(a[j])) {
-						a[i] += "-" + a[j];
-						a[j] = " ";
+						a[j] += "-" + a[i];
+						a[i] = " ";
 
 						encontrou = true;
 						break;
 					}
 				}
 				if (!encontrou) {
-					for(int j = i-1; j >-1; j--) {
-						if (!stopwords.contains(a[j])) {
+					for(int j = i+1; j >-1; j++) {
+						if (!stopwords.contains(a[j]) && !divisores.contains(a[j])) {
 							a[i] += "-" + a[j];
 							a[j] = " ";
 							break;
@@ -170,25 +168,24 @@ public class NaiveBayes {
 				}
 			}
 		}
-		for (String z : a) {
-			System.out.print(";" + z);
-		}
-		System.out.println();
+//		for (String z : a) {
+//			System.out.print(";"+z);
+//		}
+//		System.out.println();
 
 		List<String> list1 = new ArrayList<String>();
 		Collections.addAll(list1, frase.split(";"));
 
 		System.out.println("-------------------");
 
-		Set<String> set = new HashSet<>(Arrays.asList(frase.split(";")));
+		Set<String> set = new HashSet<>(Arrays.asList(a));
 		set.remove("");
-		for (String x : set) {
-			x = x.replaceAll("[^\\p{L}\\s]", "");
-		}
-
+		set.remove(" ");
+		set.remove(",");
+		set.remove(".");
 		set.removeAll(stopwords);
 		for (String x : set) {
-			x = x.replace("\t", "");
+//			x = x.replace("\t", "");
 			System.out.println(x);
 		}
 
