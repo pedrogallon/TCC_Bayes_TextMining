@@ -1,10 +1,8 @@
 import java.text.Normalizer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,12 +16,14 @@ public class NaiveBayes {
 
 	public NaiveBayes() {
 		this.bayes = new HashMap<String, int[]>();
+		this.entries = 0;
 
-		this.divisores = new HashSet<>(Arrays.asList(new String[] { ".", ",", "(", ")", "!", ";", ":", "?", "e" }));
+		this.divisores = new HashSet<>(Arrays.asList(new String[] { ".", ",", "(", ")", "!", ";", ":", "?" })); // , "e"
 
-		this.modificadores = new HashSet<>(Arrays.asList(new String[] { "bastante", "bastantes", "grande", "grandes", "meio",
-				"muito", "nao", "pequena", "pequenas", "pequeno", "pequenos", "pouca", "poucas", "pouco", "poucos", "bem"}));
-
+		this.modificadores = new HashSet<>(Arrays.asList(new String[] { "bastante", "bastantes", "grande", "grandes",
+				"meio", "muito", "nao", "pequena", "pequenas", "pequeno", "pequenos", "pouca", "poucas", "pouco",
+				"poucos", "bem", "boa", "ruim", "agradavel" }));
+		// TODO analisar modificadores sozinhos
 		this.stopwords = new HashSet<>(Arrays.asList(new String[] { "", " ", "\t", "\n", "a", "a", "achamos", "achei",
 				"agora", "ainda", "algo", "alguem", "algum", "alguma", "algumas", "alguns", "ampla", "amplas", "amplo",
 				"amplos", "ante", "antes", "ao", "aos", "apos", "aquela", "aquelas", "aquele", "aqueles", "aquilo",
@@ -57,7 +57,7 @@ public class NaiveBayes {
 				"tinhamos", "tive", "tivemos", "tiver", "tivera", "tiveram", "tiveramos", "tiverem", "tivermos",
 				"tivesse", "tivessem", "tivessemos", "toda", "todas", "todavia", "todo", "todos", "tu", "tua", "tuas",
 				"tudo", "ultima", "ultimas", "ultimo", "ultimos", "um", "uma", "umas", "uns", "vendo", "ver", "vez",
-				"vindo", "vir", "voce", "voces", "vos", "vos", "vou" }));
+				"vindo", "vir", "voce", "voces", "vos", "vos", "vou", "ta" }));
 
 		/*
 		 * sem normalização (tirar acentos) this.stopwords = new
@@ -107,22 +107,23 @@ public class NaiveBayes {
 		 * "à", "às", "é", "éramos", "última", "últimas", "último", "últimos", "\t",
 		 * "\n", "" }));
 		 */
-		this.bayes.put("bom", new int[] { 0, 1, 5, 8 }); // 14 +10 +9 +17 +10 43 60
-		this.bayes.put("horrível", new int[] { 7, 3, 0, 0 });
-		this.bayes.put("ruim", new int[] { 3, 5, 1, 0 });
-		this.bayes.put("ótimo", new int[] { 0, 0, 4, 9 });
-		this.bayes.put("gostei", new int[] { 1, 3, 5, 1 });
+//		this.bayes.put("bom", new int[] { 0, 1, 5, 8 }); // 14 +10 +9 +17 +10 43 60
+//		this.bayes.put("horrível", new int[] { 7, 3, 0, 0 });
+//		this.bayes.put("ruim", new int[] { 3, 5, 1, 0 });
+//		this.bayes.put("ótimo", new int[] { 0, 0, 4, 9 });
+//		this.bayes.put("gostei", new int[] { 1, 3, 5, 1 });
 
-		this.entries = 60;
+//		this.entries = 60;
 	}
 
-	public void format(String frase) {
+	public String[] getTokens(String frase) {
+		System.out.println(frase);
 
 		frase = frase.toLowerCase();
 
 		frase = Normalizer.normalize(frase, Normalizer.Form.NFKD).replaceAll("[^\\p{ASCII}]", "");
 
-		// remove todo char especial, incluindo pontuação
+		// remove todo char especial
 		frase = frase.replaceAll("[@#$%&*-+={}/[/]'`~^_]", " "); // .,()!;:?
 		// separa pontuacao
 		frase = frase.replace(".", " .");
@@ -135,18 +136,22 @@ public class NaiveBayes {
 		frase = frase.replace("?", " ?");
 //		//remove tabs
 		frase = frase.replace("\t", " ");
-//		//remove espacos desnecessarios
+//		//remove espacos extra (transforma em apenas 1)
 		frase = frase.replaceAll(" +", ";");
 
-		// separacao para verificacao de nao e muito
+		// verificação por modificadores
+		// une palavra e modificador (nao gostei -> nao-gostei)
 		String[] a = frase.split(";");
 		for (int i = 0; i < a.length; i++) {
 			if (modificadores.contains(a[i])) {
 				boolean encontrou = false;
+
+				// procura se há palavra anterior; para caso encontre divisor; pula stopwords
 				for (int j = i - 1; j > -1; j--) {
-					
-					if (divisores.contains(a[j]))break;
-					
+
+					if (divisores.contains(a[j]))
+						break;
+
 					if (!stopwords.contains(a[j])) {
 						a[j] += "-" + a[i];
 						a[i] = " ";
@@ -155,43 +160,67 @@ public class NaiveBayes {
 						break;
 					}
 				}
+
+				// tenta encontrar palavra posterior caso não tenha encontrado anterior
+				// TODO verificar se há problema nesse !divisores
 				if (!encontrou) {
-					for(int j = i+1; j >-1; j++) {
+					for (int j = i + 1; j <a.length; j++) {
 						if (!stopwords.contains(a[j]) && !divisores.contains(a[j])) {
 							a[i] += "-" + a[j];
 							a[j] = " ";
 							break;
 						}
 					}
-//					a[i - 1] += "-" + a[i];
-//					a[i] = " ";
 				}
 			}
 		}
-//		for (String z : a) {
-//			System.out.print(";"+z);
-//		}
-//		System.out.println();
 
-		List<String> list1 = new ArrayList<String>();
-		Collections.addAll(list1, frase.split(";"));
-
-		System.out.println("-------------------");
-
+		// transforma em set para remoção de duplicatas e stopwords
 		Set<String> set = new HashSet<>(Arrays.asList(a));
 		set.remove("");
 		set.remove(" ");
 		set.remove(",");
 		set.remove(".");
 		set.removeAll(stopwords);
+
+		// print
 		for (String x : set) {
-//			x = x.replace("\t", "");
-			System.out.println(x);
+			System.out.print(x + ";");
 		}
+		System.out.println();
+
+		System.out.println("-------------------");
+		String[] tokens = new String[] {};
+		// retorna tokens como String[]
+		return (set.toArray(tokens));
 
 	}
 
-	private void train(String[] frases, int[] avaliacao) {
+	public void train(String[] frases, Integer[] avaliacao) {
+
+		// converte avaliação de 1 a 5 estrelas para as metrica usadas
+		// 0 = mtruim; 1 = ruim; 2 = bom; 3 = mt bom;
+		for (int i = 0; i < frases.length; i++) {
+			switch (avaliacao[i]) {
+			case 1:
+				avaliacao[i] = 0;
+				break;
+			case 2:
+				avaliacao[i] = 0;
+				break;
+			case 3:
+				avaliacao[i] = 1;
+				break;
+			case 4:
+				avaliacao[i] = 2;
+				break;
+			case 5:
+				avaliacao[i] = 3;
+				break;
+
+			}
+			insert(getTokens(frases[i]), avaliacao[i]);
+		}
 
 	};
 
@@ -205,13 +234,14 @@ public class NaiveBayes {
 				temp[rating]++;
 				this.bayes.put(s, temp);
 			}
+			this.entries++;
 		}
 
 	};
 
 	public int getRating(String frase) {
 
-		String[] f = frase.split(" ");
+		String[] f = getTokens(frase);
 		double[] r = { 0, 0, 0, 0 };
 		for (int i = 0; i < f.length; i++) {
 			int[] a = bayes.get(f[i]);
@@ -234,6 +264,18 @@ public class NaiveBayes {
 		}
 		insert(f, maiorRatingIndex);
 		return maiorRatingIndex;
+	}
+
+	public void showBayes() {
+		System.out.println("Tokens\t0\t1\t2\t3");
+		for (Map.Entry<String, int[]> entry : this.bayes.entrySet()) {
+			System.out.print(entry.getKey() + ":\t");
+			for (int i : entry.getValue()) {	
+				System.out.print(i+"\t");
+			}
+			System.out.println();
+		}
+
 	}
 
 }

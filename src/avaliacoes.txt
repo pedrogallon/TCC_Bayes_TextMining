@@ -1,0 +1,63 @@
+4;;Gostei do lugar, mas achei demorado o atendimento
+5;;Ótimo lugar
+4;;Gostei bastante
+2;;Não me agradou
+2;;Demora na preparação dos pratos
+3;;Comida boa porem com certa demora
+4;;Otimo restaurante, ambiente agradavel
+5;;Ambiente maravilhoso, comida do mesmo nivel do restaurante super recomendo
+5;;Eu voltaria com toda certeza, otimo restaurante
+3;;Restaurante bom, ambiente agradevel
+5;;Excelente restaurante
+3;;Bom, demorou um pouco para fazer o prato mas ta otimo
+5;;Tudo maravilhoso
+3;;Ambiente agradavel
+4;;Otimo ambiente e boa comida
+4;;Achei Otimo
+3;;Achei Bom
+3;;Muito bom
+1;;Lugar ruim e comida pessima
+2;;muito Ruim.
+1;;Local pessimo
+5;;Excelente
+5;;Um dos melhores restaurantes que ja visitei
+4;;Muito bom, comida boa e preparo rapido
+1;;Horrivel, nao voltaria
+2;;Comida boa, porem demora demais para servir
+2;;Local ruim
+3;;Bom lugar, comid boa
+3;;Bom
+4;;Comida maravilhosa porem demora um pouco
+4;;Otimo, comida marailhosa
+4;;Muito bom
+3;;Bom, comida boa
+5;;Muito maravilhoso, comida incrivel e bem saborosa
+5;;Maravilhoso
+5;;Comida maravilhosa, ambiente otimo
+3;;Bom lugar, comida boa
+5;;Muito maravilhoso, comida incrivel
+4;;Otimo
+4;;Lugar otimo
+1;;Ambiente ruim, comida fria
+1;;Comida ruim, e fria
+3;;Bom lugar e comida boa
+4;;Otimo, comida boa
+3;;Comida boa
+3;;Comida boa
+2;;Ruim
+3;;Bom lugar e comida
+5;;Comida gostosa
+5;;o estabelecimento é bem organizado, limpo e a comida muito gostosa
+5;;Comida muito boa, lugar agradavel
+1;;Comida ruim
+1;;desorganizado, o pedido veio errado
+1;;Não gostei da comida nem do lugar
+2;;comida boa, lugar desagradavel
+2;;Não gostei do lugar
+1;;O lugar não é feio, desorganizado e pequeno
+3;;Comida razoavel, lugar ótimo
+4;;Comida boa
+5;;Gostei de tudo, lugar perfeito, pessoas muito educadas
+2;;Lugar bonito, bem organizado, mas a comida deixou a desejar
+4;;Gostei da comida
+4;;Gostei do lugar, comida boa
